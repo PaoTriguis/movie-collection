@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Flex, Button } from '@chakra-ui/react';
 import MovieCard from './MovieCard';
 import apiConfig from '../constants';
+import SearchBar from './SearchBar';
 
 const HomePage = () => {
     const [movies, setMovies] = useState([]);
@@ -10,12 +11,15 @@ const HomePage = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [startPage, setStartPage] = useState(1);
     const [endPage, setEndPage] = useState(Math.min(totalPages, 5));
+    const [searchQuery, setSearchQuery] = useState('');
 
-    const fetchMovies = async (page) => {
+    const fetchMovies = async (page, query = '') => {
         try {
-        const response = await fetch(
-            `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiConfig.key}&page=${page}`
-        );
+        const url = query
+            ? `https://api.themoviedb.org/3/search/movie?api_key=${apiConfig.key}&query=${query}&page=${page}`
+            : `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiConfig.key}&page=${page}`;
+
+        const response = await fetch(url);
 
         if (!response.ok) {
             throw new Error('Failed to fetch movies');
@@ -30,9 +34,9 @@ const HomePage = () => {
     };
 
     useEffect(() => {
-        fetchMovies(currentPage);
+        fetchMovies(currentPage, searchQuery);
         window.scrollTo(0, 0);
-    }, [currentPage]);
+    }, [currentPage, searchQuery]);
 
     const handleNextPage = () => {
         setCurrentPage((prevPage) => prevPage + 1);
@@ -56,14 +60,24 @@ const HomePage = () => {
         }
     }, [currentPage, totalPages]);
 
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        setCurrentPage(1);
+    };
+
     if (error) {
         return <div>Error: {error}</div>;
     }
 
-    const visiblePageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+    const visiblePageNumbers = Array.from(
+        { length: endPage - startPage + 1 },
+        (_, index) => startPage + index
+    );
 
     return (
         <Box>
+        <SearchBar onSearch={handleSearch} />
+
         <Flex flexWrap="wrap" justify="center">
             <MovieCard movies={movies} />
         </Flex>
