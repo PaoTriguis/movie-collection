@@ -1,7 +1,6 @@
-import { Card, CardHeader, CardBody, CardFooter, Flex, Box, Avatar, IconButton, Heading, Text, Image, Button } from '@chakra-ui/react'
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 import React from 'react';
-import MovieCard from './MovieCard';
+import HomePage from './HomePage';
 
 const MovieTabs = () => {
     return (
@@ -13,7 +12,7 @@ const MovieTabs = () => {
 
             <TabPanels>
                 <TabPanel>
-                    <MovieCard />
+                    <HomePage />
                 </TabPanel>
                 <TabPanel>
                 <p>two!</p>
