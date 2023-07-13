@@ -4,7 +4,7 @@ import MovieCard from './MovieCard';
 import apiConfig from '../constants';
 import SearchBar from './SearchBar';
 
-const HomePage = () => {
+const HomePage = ({favoriteMovies, addRemoveFavorites}) => {
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -12,6 +12,7 @@ const HomePage = () => {
     const [startPage, setStartPage] = useState(1);
     const [endPage, setEndPage] = useState(Math.min(totalPages, 5));
     const [searchQuery, setSearchQuery] = useState('');
+
 
     const fetchMovies = async (page, query = '') => {
         try {
@@ -32,6 +33,8 @@ const HomePage = () => {
         setError(error.message);
         }
     };
+
+
 
     useEffect(() => {
         fetchMovies(currentPage, searchQuery);
@@ -74,12 +77,23 @@ const HomePage = () => {
         (_, index) => startPage + index
     );
 
+    const handleAddFavorites = (movieId, movie) =>{
+        const favoriteMoviesIds = favoriteMovies.map(movie => movie.id)
+        const isFavorite = favoriteMoviesIds.includes(movieId);
+        console.log(isFavorite, movieId, movie);
+        addRemoveFavorites(isFavorite, movieId, movie)
+    }
+
+    const handleAddWatchlist = () =>{
+
+    }
+
     return (
         <Box>
         <SearchBar onSearch={handleSearch} />
 
         <Flex flexWrap="wrap" justify="center">
-            <MovieCard movies={movies} />
+            <MovieCard movies={movies} handleAddFavorites={handleAddFavorites} handleAddWatchlist={handleAddWatchlist}/>
         </Flex>
 
         <Flex justify="center" mt={4}>
