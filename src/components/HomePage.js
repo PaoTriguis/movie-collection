@@ -13,7 +13,6 @@ const HomePage = ({favoriteMovies, addRemoveFavorites}) => {
     const [endPage, setEndPage] = useState(Math.min(totalPages, 5));
     const [searchQuery, setSearchQuery] = useState('');
 
-
     const fetchMovies = async (page, query = '') => {
         try {
         const url = query
@@ -93,7 +92,7 @@ const HomePage = ({favoriteMovies, addRemoveFavorites}) => {
         <SearchBar onSearch={handleSearch} />
 
         <Flex flexWrap="wrap" justify="center">
-            <MovieCard movies={movies} handleAddFavorites={handleAddFavorites} handleAddWatchlist={handleAddWatchlist}/>
+            <MovieCard movies={movies} favoriteMovies={favoriteMovies} handleAddFavorites={handleAddFavorites} handleAddWatchlist={handleAddWatchlist}/>
         </Flex>
 
         <Flex justify="center" mt={4}>

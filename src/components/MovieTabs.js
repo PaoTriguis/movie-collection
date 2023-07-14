@@ -27,6 +27,7 @@ const MovieTabs = () => {
     }
 
     const addRemoveFavorites = async (isFavorite, movieId, movie) =>{
+
         try {
             const url = `https://api.themoviedb.org/3/account/${apiConfig.userId}/favorite`
             const options = {
