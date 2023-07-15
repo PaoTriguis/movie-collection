@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
+import ReactDOM from "react-dom";
+
 import {
   Card,
   CardHeader,
@@ -12,18 +14,17 @@ import {
 } from "@chakra-ui/react";
 import { StarIcon, PlusSquareIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 
+
+
 const MovieCard = ({
   movies,
   favoriteMovies,
   handleAddFavorites,
   handleAddWatchlist,
+  openModal
 }) => {
-    const favoriteIds = favoriteMovies?.map(movie => movie.id);
-    
-    
-    
-    
-
+  const favoriteIds = favoriteMovies?.map((movie) => movie.id);
+  
 
   return (
     <>
@@ -35,6 +36,7 @@ const MovieCard = ({
                   objectFit="cover"
                   src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                   alt="Chakra UI"
+                  onClick={() => openModal(movie.id)}
                 />
                 <Text>{movie.title}</Text>
               </CardBody>
@@ -48,19 +50,21 @@ const MovieCard = ({
                   },
                 }}
               >
-                {favoriteIds?.includes(movie.id) ? <Button
+                {favoriteIds?.includes(movie.id) ? (
+                  <Button
                     flex="1"
                     variant="ghost"
-                    leftIcon={<StarIcon color='gold'/>}
+                    leftIcon={<StarIcon color="gold" />}
                     onClick={() => handleAddFavorites(movie.id, movie)}
-                  /> : <Button
-                  flex="1"
-                  variant="ghost"
-                  leftIcon={<StarIcon />}
-                  onClick={() => handleAddFavorites(movie.id, movie)}
-                />}
-                
-                
+                  />
+                ) : (
+                  <Button
+                    flex="1"
+                    variant="ghost"
+                    leftIcon={<StarIcon />}
+                    onClick={() => handleAddFavorites(movie.id, movie)}
+                  />
+                )}
 
                 <Button
                   flex="1"
@@ -71,8 +75,11 @@ const MovieCard = ({
                 <Button
                   flex="1"
                   variant="ghost"
+                  onClick={() => openModal(movie.id)}
                   leftIcon={<ExternalLinkIcon />}
                 />
+
+              
               </CardFooter>
             </Card>
           ))
@@ -83,6 +90,7 @@ const MovieCard = ({
                   objectFit="cover"
                   src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                   alt="Chakra UI"
+                  onClick={() => openModal(movie.id)}
                 />
                 <Text>{movie.title}</Text>
               </CardBody>
@@ -96,17 +104,21 @@ const MovieCard = ({
                   },
                 }}
               >
-                {favoriteIds?.includes(movie.id) ? <Button
+                {favoriteIds?.includes(movie.id) ? (
+                  <Button
                     flex="1"
                     variant="ghost"
-                    leftIcon={<StarIcon color='gold'/>}
+                    leftIcon={<StarIcon color="gold" />}
                     onClick={() => handleAddFavorites(movie.id, movie)}
-                  /> : <Button
-                  flex="1"
-                  variant="ghost"
-                  leftIcon={<StarIcon />}
-                  onClick={() => handleAddFavorites(movie.id, movie)}
-                />}
+                  />
+                ) : (
+                  <Button
+                    flex="1"
+                    variant="ghost"
+                    leftIcon={<StarIcon />}
+                    onClick={() => handleAddFavorites(movie.id, movie)}
+                  />
+                )}
                 <Button
                   flex="1"
                   variant="ghost"
@@ -117,6 +129,7 @@ const MovieCard = ({
                   flex="1"
                   variant="ghost"
                   leftIcon={<ExternalLinkIcon />}
+                  onClick={() => openModal(movie.id)}
                 />
               </CardFooter>
             </Card>
