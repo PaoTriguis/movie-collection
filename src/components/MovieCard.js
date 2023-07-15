@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import ReactDOM from "react-dom";
+import RatingBar from "./RatingBar";
 
 import {
   Card,
@@ -30,7 +31,7 @@ const MovieCard = ({
     <>
       {movies
         ? movies.map((movie) => (
-            <Card maxW="xs" key={movie.id}>
+            <Card maxW="xs" key={movie.id} m={2} boxShadow='xl'>
               <CardBody>
                 <Image
                   objectFit="cover"
@@ -38,7 +39,8 @@ const MovieCard = ({
                   alt="Chakra UI"
                   onClick={() => openModal(movie.id)}
                 />
-                <Text>{movie.title}</Text>
+                <Text align="center" justify="center" margin="2" >{movie.title}</Text>
+                <RatingBar movieId={movie.id} />
               </CardBody>
 
               <CardFooter
@@ -92,7 +94,7 @@ const MovieCard = ({
                   alt="Chakra UI"
                   onClick={() => openModal(movie.id)}
                 />
-                <Text>{movie.title}</Text>
+                <Text align="center" justify="center" margin="2" >{movie.title}</Text>
               </CardBody>
 
               <CardFooter
