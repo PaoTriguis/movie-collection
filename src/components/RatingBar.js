@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import apiConfig from '../constants';
-import { Flex, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Box, Text } from '@chakra-ui/react';
+import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, Box, Button } from '@chakra-ui/react';
 
 const MovieRatingBar = ({ movieId }) => {
   const [rating, setRating] = useState(0);
   const [userRating, setUserRating] = useState(null);
+  const [generalRating, setGeneralRating] = useState(null);
 
   useEffect(() => {
     fetchUserRating();
+    fetchGeneralRating();
   }, []);
 
   useEffect(() => {
-    if (userRating !== null) {
-      setRating(userRating);
+    if (userRating !== null && generalRating !== null) {
+      const updatedRating = (userRating + generalRating) / 2;
+      setRating(updatedRating);
     }
-  }, [userRating]);
+  }, [userRating, generalRating]);
 
-  const handleRatingChange = (value) => {
-    setRating(value);
-    handleRateMovie(value);
+  const handleRateButtonClick = () => {
+    handleRateMovie(rating);
   };
 
   const handleRateMovie = (value) => {
@@ -40,12 +42,10 @@ const MovieRatingBar = ({ movieId }) => {
       .then((response) => response.json())
       .then((data) => {
         console.log('Rating submitted successfully:', data);
-        // Handle success response or update UI accordingly
-        fetchUserRating(); // Fetch the user's updated rating
+        fetchUserRating(); 
       })
       .catch((error) => {
         console.error('Error rating movie:', error);
-        // Handle error or display error message
       });
   };
 
@@ -66,38 +66,68 @@ const MovieRatingBar = ({ movieId }) => {
       console.log(movieRating);
     } catch (error) {
       console.log(error);
-      // Handle error or display error message
+    }
+  };
+
+  const fetchGeneralRating = async () => {
+    try {
+      const url = `https://api.themoviedb.org/3/movie/${movieId}`;
+      const options = {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${apiConfig.accessToken}`,
+        },
+      };
+      const response = await fetch(url, options);
+      const data = await response.json();
+      const movieRating = data.vote_average;
+      setGeneralRating(movieRating);
+      console.log(movieRating);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   return (
-<Box display="flex" alignItems="center" p={4}>
-  <Slider
-    min={0}
-    max={10}
-    step={0.5}
-    value={rating}
-    onChange={handleRatingChange}
-    colorScheme="blue"
-    defaultValue={userRating || 0}
-  >
-    <SliderTrack>
-      <SliderFilledTrack />
-    </SliderTrack>
-    <SliderThumb boxSize={6}>
-      <Box color="white" fontWeight="bold" fontSize="sm">
-        {rating}
+    <Box display="flex" flexDirection="column" alignItems="center" p={4}>
+      <Box display="flex" w="90%" flexDirection="row">
+        <Slider
+          min={0}
+          max={10}
+          step={0.5}
+          value={rating}
+          onChange={setRating}
+          colorScheme="blue"
+          defaultValue={userRating || 0}
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb boxSize={4} boxShadow="0 2px 4px rgba(0, 0, 0, 0.2)">
+
+          </SliderThumb>
+        </Slider>
+
+        <Button colorScheme="blue" ml={4} onClick={handleRateButtonClick}>
+          Rate
+        </Button>
       </Box>
-    </SliderThumb>
-  </Slider>
 
-  {userRating !== null && (
-    <Box ml={4}>
-      <p>{userRating}</p>
+      <Box>
+      {userRating !== null && (
+        <Box ml={4} p={2}>
+          <p>Your Rating: {userRating}</p>
+        </Box>
+      )}
+
+      {generalRating !== null && (
+        <Box ml={4}>
+          <p>General Rating: {generalRating}</p>
+        </Box>
+      )}
+      </Box>
     </Box>
-  )}
-</Box>
-
   );
 };
 
