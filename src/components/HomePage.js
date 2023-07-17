@@ -27,8 +27,9 @@ const HomePage = ({ favoriteMovies, addRemoveFavorites }) => {
   const [startPage, setStartPage] = useState(1);
   const [endPage, setEndPage] = useState(Math.min(totalPages, 5));
   const [searchQuery, setSearchQuery] = useState("");
+  const [defaultMovies, setDefaultMovies] = useState([]);
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [currnetMovieDetails, setCurrnetMovieDetails] = useState("");
+  const [currentMovieDetails, setCurrentMovieDetails] = useState("");
 
   const fetchMovies = async (page, query = "") => {
     try {
@@ -45,6 +46,10 @@ const HomePage = ({ favoriteMovies, addRemoveFavorites }) => {
       const data = await response.json();
       setMovies(data.results);
       setTotalPages(data.total_pages);
+
+      if (!query) {
+        setDefaultMovies(data.results);
+      }
     } catch (error) {
       setError(error.message);
     }
@@ -82,14 +87,15 @@ const HomePage = ({ favoriteMovies, addRemoveFavorites }) => {
     setCurrentPage(1);
   };
 
+  const handleGoBack = () => {
+    setMovies(defaultMovies);
+    setSearchQuery("");
+    setCurrentPage(1);
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
-
-  const visiblePageNumbers = Array.from(
-    { length: endPage - startPage + 1 },
-    (_, index) => startPage + index
-  );
 
   const handleAddFavorites = (movieId, movie) => {
     const favoriteMoviesIds = favoriteMovies.map((movie) => movie.id);
@@ -114,13 +120,18 @@ const HomePage = ({ favoriteMovies, addRemoveFavorites }) => {
 
     fetch(url, options)
       .then((res) => res.json())
-      .then((json) => setCurrnetMovieDetails(json))
+      .then((json) => setCurrentMovieDetails(json))
       .catch((err) => console.error("error:" + err));
   }
 
   function closeModal() {
     setIsOpen(false);
   }
+
+  const visiblePageNumbers = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
 
   return (
     <Box>
@@ -134,9 +145,15 @@ const HomePage = ({ favoriteMovies, addRemoveFavorites }) => {
       >
         <MovieDetailsModal
           closeModal={closeModal}
-          movie={currnetMovieDetails}
+          movie={currentMovieDetails}
         />
       </Modal>
+
+      {searchQuery && (
+        <Button onClick={handleGoBack} variant="outline" mt={4} ml={4}>
+          Back
+        </Button>
+      )}
 
       <Flex flexWrap="wrap" justify="center">
         <MovieCard
